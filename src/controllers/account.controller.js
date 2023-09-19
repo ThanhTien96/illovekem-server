@@ -1,9 +1,9 @@
 const AuthService = require("../middleware/auth.middleware");
 const { UserModel } = require("../models/user.model");
 
-
-const timeLogin = '3h';
-const timeOfRefreshToken = '30day';
+const current_time = Math.floor(Date.now() / 1000);
+const timeLogin = current_time + 3 * 60 * 60;
+const timeOfRefreshToken = current_time + 30 * 24 * 60 * 60; // 30 ngày tính bằng giây;
 
 class AccountColtroller {
     /** get app token */
