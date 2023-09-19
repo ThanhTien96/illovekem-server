@@ -3,7 +3,7 @@ const { UserModel } = require("../models/user.model");
 
 
 const timeLogin = '3h';
-const timeOfRefreshToken = '30d';
+const timeOfRefreshToken = '30day';
 
 class AccountColtroller {
     /** get app token */
