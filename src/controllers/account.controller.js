@@ -11,7 +11,7 @@ class AccountColtroller {
         try {
             const findById = await UserModel.findById(res.id)
             if(!findById) return res.status(403).json({errors: 'forbidden errors'})
-            const {token} = await AuthService.generateToken({id: findById._id}, '60d')
+            const {token} = await AuthService.generateToken({id: findById._id}, current_time + 60 * 24 * 60 * 60;)
             res.status(200).json({token})
         } catch (err) {
             res.status(500).json(err);
