@@ -23,7 +23,7 @@ const accountRouter = require('./src/routers/account.router');
 
 app.use("/api/v1", postRouter, productRouter, userRouter, mediaRouter, otherFeatureRouter, accountRouter);
 
-const PORT = process.env.SERVER_PORT || 8000;
+const PORT = process.env.SERVER_PORT || 3000;
 const MONGOOSE_DB = process.env.MONGOOSE_DB;
 mongooseDB.set("strictQuery", true);
 mongooseDB
