@@ -46,6 +46,7 @@ class AuthorMiddlewareChecking {
     static isSupperAdmin = async (req, res, next) => {
         if(!req.headers.authorization) return res.status(401).json({errors: "Missing authorization token"});
         const token = req.headers.authorization.split(' ')[1];
+
         try {
 
             const deCode = await AuthService.verifyToken(token);
@@ -59,7 +60,7 @@ class AuthorMiddlewareChecking {
             next()
 
         } catch(err) {
-            res.status(500).json(err)
+            res.status(500).json({erorrs: 'forbiden'})
         }
     }
 }
