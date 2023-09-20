@@ -10,6 +10,10 @@ const schema = new mongoose.Schema({
         type: String,
         required: true
     },
+    subContent: {
+        type: String;
+        required: false
+    },
     media: [
         {
             fileName: {
