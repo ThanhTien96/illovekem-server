@@ -11,7 +11,7 @@ const schema = new mongoose.Schema({
         required: true
     },
     subContent: {
-        type: String;
+        type: String,
         required: false
     },
     media: [
