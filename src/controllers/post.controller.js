@@ -47,11 +47,12 @@ class PostController {
   /** create post */
   static createPost = async (req, res) => {
     try {
-      const { title, content } = req.body;
+      const { title, content, subContent } = req.body;
       const { files } = req;
       const newPost = await PostModel({
         title,
         content,
+        subContent,
         media: files.map((ele) => ({ src: ele.path, fileName: ele.filename })),
       });
       await newPost.save();
