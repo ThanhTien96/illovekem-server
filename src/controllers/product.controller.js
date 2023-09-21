@@ -12,7 +12,7 @@ class ProductTypeController {
   /** get all method */
   static getAllProductType = async (req, res) => {
     try {
-      const productType = await ProductTypeModel.find().sort({role: "asc"});
+      const productType = await ProductTypeModel.find().sort({ role: "asc" });
       const data = productType.map((ele) => ({
         _id: ele._id,
         typeName: ele.typeName,
@@ -159,20 +159,54 @@ class ProductController {
   static getAllProducts = async (req, res) => {
     try {
       const { page, perPage } = req.query;
-      
+
       if (page && perPage) {
-        if(Number(page) <= 0) page = 1;
-        if(Number(perPage) <= 0) perPage = 10;
-        
+        if (Number(page) <= 0) page = 1;
+        if (Number(perPage) <= 0) perPage = 10;
+
         let passQuantity = (Number(page) - 1) * Number(perPage);
         const total = await ProductModel.countDocuments();
         const totalPage = Math.ceil(total / Number(perPage));
 
-        const data = await ProductModel.find().skip(passQuantity).limit(perPage).sort({createdAt: -1}).populate('productType');
-        res.status(200).json({data, total, totalPage, currentPage: page});
+        const data = await ProductModel.find()
+          .skip(passQuantity)
+          .limit(perPage)
+          .sort({ createdAt: -1 })
+          .populate("productType");
+        res.status(200).json({ data, total, totalPage, currentPage: page });
       } else {
         // Lấy tất cả sản phẩm
         const products = await ProductModel.find().populate("productType");
+
+        res.status(200).json(products);
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).json(err);
+    }
+  };
+
+  static getProductIncludeType = async (req, res) => {
+    try {
+      const { page, perPage, productType } = req.query;
+
+      if (page && perPage) {
+        if (Number(page) <= 0) page = 1;
+        if (Number(perPage) <= 0) perPage = 10;
+
+        let passQuantity = (Number(page) - 1) * Number(perPage);
+        const total = await ProductModel.countDocuments();
+        const totalPage = Math.ceil(total / Number(perPage));
+
+        const data = await ProductModel.find({productType})
+          .skip(passQuantity)
+          .limit(perPage)
+          .sort({ createdAt: -1 })
+          .populate("productType");
+        res.status(200).json({ data, total, totalPage, currentPage: page });
+      } else {
+        // Lấy tất cả sản phẩm
+        const products = await ProductModel.find({productType}).populate("productType");
 
         res.status(200).json(products);
       }
@@ -186,10 +220,12 @@ class ProductController {
   static getDetailProduct = async (req, res) => {
     try {
       const { id } = req.params;
-      const findProduct = await ProductModel.findById(id).populate('productType');
+      const findProduct = await ProductModel.findById(id).populate(
+        "productType"
+      );
       if (!findProduct)
         return res.status(404).json({ message: statusMessage.NOT_FOUND });
-     
+
       res.status(200).json(findProduct);
     } catch (err) {
       res.status(500).json(err);
@@ -258,9 +294,7 @@ class ProductController {
 
       /** delete images if exist images */
       if (files && files.length > 0) {
-        await deleteImagesCloudinary(
-          oldMedia.map((media) => media.fileName)
-        );
+        await deleteImagesCloudinary(oldMedia.map((media) => media.fileName));
 
         // Lưu hình ảnh mới và cập nhật media
         const newMedia = [];
@@ -338,14 +372,14 @@ class ProductController {
       }
 
       /** delete images */
-      const mediaList = product.media.filter(ele => {
-        if(ele.fileName) {
-          return ele.fileName
+      const mediaList = product.media.filter((ele) => {
+        if (ele.fileName) {
+          return ele.fileName;
         }
-      })
+      });
 
-      if(mediaList.length > 0) {
-        await deleteImagesCloudinary(mediaList.map(ele => ele.fileName));
+      if (mediaList.length > 0) {
+        await deleteImagesCloudinary(mediaList.map((ele) => ele.fileName));
       }
       // Lấy id của ProductType từ sản phẩm
       const productTypeId = product.productType;
