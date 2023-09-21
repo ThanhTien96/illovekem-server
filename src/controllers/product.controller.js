@@ -195,7 +195,7 @@ class ProductController {
         if (Number(perPage) <= 0) perPage = 10;
 
         let passQuantity = (Number(page) - 1) * Number(perPage);
-        const total = await ProductModel.countDocuments();
+        const total = await ProductModel.countDocuments({ productType });
         const totalPage = Math.ceil(total / Number(perPage));
 
         const data = await ProductModel.find({productType})
