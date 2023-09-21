@@ -24,6 +24,21 @@ class ProductTypeController {
     }
   };
 
+  static getAllProductTypeWithProduct = async (req, res) => {
+    try {
+      const productType = await ProductTypeModel.find().sort({ role: "asc" }).populate('products');
+      const data = productType.map((ele) => ({
+        _id: ele._id,
+        typeName: ele.typeName,
+        role: ele.role,
+      }));
+      res.status(200).json(data);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
+
+ 
   /** get detail method */
   static getDetailProductType = async (req, res) => {
     try {

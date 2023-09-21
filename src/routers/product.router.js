@@ -7,6 +7,7 @@ const router = express.Router();
 
 /** product type route */
 router.get('/productType',AuthorMiddlewareChecking.checkAccessToken, ProductTypeController.getAllProductType);
+router.get('/productTypeWithProduct',AuthorMiddlewareChecking.checkAccessToken, ProductTypeController.getAllProductTypeWithProduct);
 router.get('/productType/:id',AuthorMiddlewareChecking.checkAccessToken,ProductTypeController.getDetailProductType);
 router.get('/productByProductType/:id',AuthorMiddlewareChecking.checkAccessToken,ProductTypeController.getProductTypeWithProduct);
 router.post('/productType',AuthorMiddlewareChecking.checkAccessToken, AuthorMiddlewareChecking.isAuthorization, ProductTypeController.createProductType);
