@@ -9,7 +9,7 @@ class AccountColtroller {
     /** get app token */
     static getAppToken = async (req, res) => {
         try {
-            const findById = await UserModel.findById(res.id)
+            const findById = await UserModel.findOne({userName: res.userName})
             if(!findById) return res.status(403).json({errors: 'forbidden errors'})
             const {token} = await AuthService.generateToken({id: findById._id}, current_time + 60 * 24 * 60 * 60)
             res.status(200).json({token})
