@@ -34,8 +34,8 @@ class AccountColtroller {
                 const checkPass = await AuthService.comparePassWord(password, checkUserName.password)
                 if(!checkPass) return res.status(401).json({message: 'password is not correct'})
 
-                const {token} = await AuthService.generateToken({id: checkUserName._id}, timeLogin);
-                const refeshToken = await AuthService.generateToken({id: checkUserName._id}, timeOfRefreshToken)
+                const {token} = await AuthService.generateToken({userName: checkUserName.userName}, timeLogin);
+                const refeshToken = await AuthService.generateToken({userName: checkUserName.userName}, timeOfRefreshToken)
                 const deCode = AuthService.verifyToken(token);
 
                 res.status(200).json({token, refeshToken: refeshToken.token, exp: deCode.exp})
@@ -44,8 +44,8 @@ class AccountColtroller {
                 const checkPass = await AuthService.comparePassWord(password, checkUserNameWithEmail.password)
                 if(!checkPass) return res.status(401).json({message: 'password is not correct'})
 
-                const {token} = AuthService.generateToken({id: checkUserNameWithEmail._id}, timeLogin);
-                const refeshToken = AuthService.generateToken({id: checkUserNameWithEmail._id}, timeOfRefreshToken);
+                const {token} = AuthService.generateToken({userName: checkUserNameWithEmail.userName}, timeLogin);
+                const refeshToken = AuthService.generateToken({userName: checkUserNameWithEmail.userName}, timeOfRefreshToken);
 
                 const deCode = AuthService.verifyToken(token);
                 res.status(200).json({token, refeshToken: refeshToken.token, exp: deCode.exp})
@@ -59,7 +59,7 @@ class AccountColtroller {
     /** get profile */
     static fetchProfile = async (req, res) => {
         try {
-            const findById = await UserModel.findById(res.id).populate('userType');
+            const findById = await UserModel.findOne({userName: res.userName}).populate('userType');
             if(!findById) return res.status(404).json({message: "user not found"});
             res.status(200).json(findById);
         } catch (err) {

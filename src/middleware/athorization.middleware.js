@@ -33,9 +33,9 @@ class AuthorMiddlewareChecking {
         const token = req.headers.authorization.split(' ')[1]
         try {
             const deCode = AuthService.verifyToken(token);
-            const findById = await UserModel.findById(deCode.id);
+            const findById = await UserModel.findOne({userName: deCode.userName});
             if(!findById) res.status(403).json({errors: "permission denied"});
-            res.id = findById._id
+            res.userName = findById.userName
             next();
         } catch (err) {
             res.status(500).json(err);
@@ -53,10 +53,10 @@ class AuthorMiddlewareChecking {
 
             if(!deCode) return res.status(403).json({errors: "permission dinied"});
 
-            const findById = await UserModel.findById(deCode.id).populate('userType');
+            const findById = await UserModel.findById(deCode.userName).populate('userType');
             if(!findById) return res.status(403).json({errors: "forbidden errors"});
 
-            if(findById.userType.role !== 1) return res.status(403).json({errors})
+            if(findById.userType.role !== 1) return res.status(403).json({errors: 'forbiden'})
             next()
 
         } catch(err) {
