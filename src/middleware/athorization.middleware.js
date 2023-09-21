@@ -53,7 +53,7 @@ class AuthorMiddlewareChecking {
 
             if(!deCode) return res.status(403).json({errors: "permission dinied"});
 
-            const findById = await UserModel.findById(deCode.userName).populate('userType');
+            const findById = await UserModel.findOne({userName: deCode.userName}).populate('userType');
             if(!findById) return res.status(403).json({errors: "forbidden errors"});
 
             if(findById.userType.role !== 1) return res.status(403).json({errors: 'forbiden'})
