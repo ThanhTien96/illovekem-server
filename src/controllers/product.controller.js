@@ -27,12 +27,8 @@ class ProductTypeController {
   static getAllProductTypeWithProduct = async (req, res) => {
     try {
       const productType = await ProductTypeModel.find().sort({ role: "asc" }).populate('products');
-      const data = productType.map((ele) => ({
-        _id: ele._id,
-        typeName: ele.typeName,
-        role: ele.role,
-      }));
-      res.status(200).json(data);
+     
+      res.status(200).json(productType);
     } catch (err) {
       res.status(500).json(err);
     }
