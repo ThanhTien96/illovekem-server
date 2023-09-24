@@ -271,10 +271,10 @@ class ProductController {
         if (Number(perPage) <= 0) perPage = 10;
 
         let passQuantity = (Number(page) - 1) * Number(perPage);
-        const total = await ProductModel.countDocuments({ productType });
+        const total = await ProductModel.countDocuments({ productType, isPublic: true });
         const totalPage = Math.ceil(total / Number(perPage));
 
-        const data = await ProductModel.find({ productType })
+        const data = await ProductModel.find({ productType, isPublic: true })
           .skip(passQuantity)
           .limit(perPage)
           .sort({ createdAt: -1 })
@@ -282,7 +282,7 @@ class ProductController {
         res.status(200).json({ data, total, totalPage, currentPage: page });
       } else {
         // Lấy tất cả sản phẩm
-        const products = await ProductModel.find({ productType }).populate(
+        const products = await ProductModel.find({ productType, isPublic: true }).populate(
           "productType"
         );
 
