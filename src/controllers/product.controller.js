@@ -185,7 +185,7 @@ class ProductController {
 
         if (keyWord && keyWord.length > 0) {
           // Tìm sản phẩm trùng khớp với từ khóa
-          query.$text = { $search: keyWord };
+          query.productName = { $regex: keyWord, $options: "i" }; // "i" để tìm kiếm không phân biệt hoa thường
         }
 
         data = await ProductModel.find(query)
@@ -196,6 +196,12 @@ class ProductController {
 
         res.status(200).json({ data, total, totalPage, currentPage: page });
       } else {
+        // Nếu không có trang và số sản phẩm trên trang, kiểm tra keyWord
+        if (keyWord && keyWord.length > 0) {
+          // Tìm sản phẩm trùng khớp với từ khóa
+          query.productName = { $regex: keyWord, $options: "i" }; // "i" để tìm kiếm không phân biệt hoa thường
+        }
+
         // Lấy tất cả sản phẩm
         const products = await ProductModel.find(query).populate("productType");
 
@@ -222,7 +228,10 @@ class ProductController {
         if (keyWord && keyWord.length > 0) {
           // Nếu có từ khóa, thêm điều kiện tìm kiếm theo tên sản phẩm
           query.productName = { $regex: keyWord, $options: "i" }; // "i" để tìm kiếm không phân biệt hoa thường
+
+          // Đếm tổng số sản phẩm có từ khóa
           total = await ProductModel.countDocuments(query);
+
           totalPage = Math.ceil(total / Number(perPage));
           data = await ProductModel.find(query)
             .skip(passQuantity)
@@ -230,6 +239,7 @@ class ProductController {
             .sort({ createdAt: -1 })
             .populate("productType");
         } else {
+          // Đếm tổng số sản phẩm khi không có từ khóa
           total = await ProductModel.countDocuments();
           totalPage = Math.ceil(total / Number(perPage));
           data = await ProductModel.find()
