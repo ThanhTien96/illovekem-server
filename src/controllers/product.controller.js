@@ -230,11 +230,11 @@ class ProductController {
   static publicProduct = async (req, res) => {
     try {
       const {id} = req.params;
-      const {public} = req.query
+      const {isPublic} = req.body;
       const find = await ProductModel.findById(id);
       if (!find) return res.status(404).json({message: statusMessage.NOT_FOUND});
 
-      find.updateOne({$set: {public: public}});
+      find.updateOne({$set: {isPublic: isPublic}});
       res.status(200).json({message: "public product successfull"})
 
     } catch (err) {

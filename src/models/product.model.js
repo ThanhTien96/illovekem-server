@@ -27,7 +27,7 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    public: {
+    isPublic: {
         type: Boolean,
         default: false
     },

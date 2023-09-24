@@ -19,7 +19,7 @@ router.delete('/productType/:id',AuthorMiddlewareChecking.checkAccessToken,Autho
 router.get('/product',AuthorMiddlewareChecking.checkAccessToken, ProductController.getAllProducts);
 router.get('/productWithType',AuthorMiddlewareChecking.checkAccessToken, ProductController.getProductIncludeType);
 router.get('/product/:id', AuthorMiddlewareChecking.checkAccessToken, ProductController.getDetailProduct);
-router.post('/product/:id', AuthorMiddlewareChecking.checkAccessToken, AuthorMiddlewareChecking.isSupperAdmin, ProductController.publicProduct);
+router.post('/publicProduct', AuthorMiddlewareChecking.checkAccessToken, AuthorMiddlewareChecking.isSupperAdmin, ProductController.publicProduct);
 router.post('/product',AuthorMiddlewareChecking.checkAccessToken,AuthorMiddlewareChecking.isAuthorization, uploadCloudProduct.array("media", 6),ProductController.createProduct);
 router.put('/product/:id',AuthorMiddlewareChecking.checkAccessToken,AuthorMiddlewareChecking.isAuthorization, uploadCloudProduct.array("media", 6), ProductController.updateProduct);
 router.delete('/product/:id',AuthorMiddlewareChecking.checkAccessToken,AuthorMiddlewareChecking.isAuthorization, ProductController.deleteProduct);
