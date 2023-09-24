@@ -229,7 +229,7 @@ class ProductController {
 
   static publicProduct = async (req, res) => {
     try {
-      const {id} = req.params;
+      const {id} = req.query;
       const {isPublic} = req.body;
       const find = await ProductModel.findById(id);
       if (!find) return res.status(404).json({message: statusMessage.NOT_FOUND});
