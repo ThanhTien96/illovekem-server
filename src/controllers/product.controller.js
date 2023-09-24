@@ -240,7 +240,7 @@ class ProductController {
             .populate("productType");
         } else {
           // Đếm tổng số sản phẩm khi không có từ khóa
-          total = await ProductModel.countDocuments();
+          total = await ProductModel.countDocuments(query);
           totalPage = Math.ceil(total / Number(perPage));
           data = await ProductModel.find()
             .skip(passQuantity)
