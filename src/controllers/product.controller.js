@@ -1,5 +1,5 @@
 const { deleteImagesCloudinary } = require("../middleware/uploadProduct");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { ProductTypeModel, ProductModel } = require("../models/product.model");
 const {
   createMessage,
@@ -27,15 +27,16 @@ class ProductTypeController {
 
   static getAllProductTypeWithProduct = async (req, res) => {
     try {
-      const productType = await ProductTypeModel.find().sort({ role: "asc" }).populate('products');
-     
+      const productType = await ProductTypeModel.find()
+        .sort({ role: "asc" })
+        .populate("products");
+
       res.status(200).json(productType);
     } catch (err) {
       res.status(500).json(err);
     }
   };
 
- 
   /** get detail method */
   static getDetailProductType = async (req, res) => {
     try {
@@ -167,24 +168,77 @@ class ProductTypeController {
 /** product controller */
 class ProductController {
   /** get all product  */
-
+  /** filter = isPubic ? all */
   static getAllProducts = async (req, res) => {
     try {
-      const { page, perPage } = req.query;
+      const { page, perPage, keyWord } = req.query;
+      let query = { isPublic: true };
 
       if (page && perPage) {
         if (Number(page) <= 0) page = 1;
         if (Number(perPage) <= 0) perPage = 10;
 
         let passQuantity = (Number(page) - 1) * Number(perPage);
-        const total = await ProductModel.countDocuments();
+        const total = await ProductModel.countDocuments(query);
         const totalPage = Math.ceil(total / Number(perPage));
+        let data;
 
-        const data = await ProductModel.find()
+        if (keyWord && keyWord.length > 0) {
+          // Tìm sản phẩm trùng khớp với từ khóa
+          query.$text = { $search: keyWord };
+        }
+
+        data = await ProductModel.find(query)
           .skip(passQuantity)
           .limit(perPage)
           .sort({ createdAt: -1 })
           .populate("productType");
+
+        res.status(200).json({ data, total, totalPage, currentPage: page });
+      } else {
+        // Lấy tất cả sản phẩm
+        const products = await ProductModel.find(query).populate("productType");
+
+        res.status(200).json(products);
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).json(err);
+    }
+  };
+
+  static adminGetAllProducts = async (req, res) => {
+    try {
+      const { page, perPage, keyWord } = req.query;
+      const query = {};
+
+      if (page && perPage) {
+        if (Number(page) <= 0) page = 1;
+        if (Number(perPage) <= 0) perPage = 10;
+
+        let passQuantity = (Number(page) - 1) * Number(perPage);
+        let total, totalPage, data;
+
+        if (keyWord && keyWord.length > 0) {
+          // Nếu có từ khóa, thêm điều kiện tìm kiếm theo tên sản phẩm
+          query.productName = { $regex: keyWord, $options: "i" }; // "i" để tìm kiếm không phân biệt hoa thường
+          total = await ProductModel.countDocuments(query);
+          totalPage = Math.ceil(total / Number(perPage));
+          data = await ProductModel.find(query)
+            .skip(passQuantity)
+            .limit(perPage)
+            .sort({ createdAt: -1 })
+            .populate("productType");
+        } else {
+          total = await ProductModel.countDocuments();
+          totalPage = Math.ceil(total / Number(perPage));
+          data = await ProductModel.find()
+            .skip(passQuantity)
+            .limit(perPage)
+            .sort({ createdAt: -1 })
+            .populate("productType");
+        }
+
         res.status(200).json({ data, total, totalPage, currentPage: page });
       } else {
         // Lấy tất cả sản phẩm
@@ -210,7 +264,7 @@ class ProductController {
         const total = await ProductModel.countDocuments({ productType });
         const totalPage = Math.ceil(total / Number(perPage));
 
-        const data = await ProductModel.find({productType})
+        const data = await ProductModel.find({ productType })
           .skip(passQuantity)
           .limit(perPage)
           .sort({ createdAt: -1 })
@@ -218,7 +272,9 @@ class ProductController {
         res.status(200).json({ data, total, totalPage, currentPage: page });
       } else {
         // Lấy tất cả sản phẩm
-        const products = await ProductModel.find({productType}).populate("productType");
+        const products = await ProductModel.find({ productType }).populate(
+          "productType"
+        );
 
         res.status(200).json(products);
       }
@@ -230,19 +286,24 @@ class ProductController {
 
   static publicProduct = async (req, res) => {
     try {
-        const { id } = req.query;
-        const { isPublic } = req.body;
-        
-        const updateProduct = await ProductModel.findById(id);
-        if(!updateProduct) return res.status(404).json({message: statusMessage.NOT_FOUND});
-        const updated = await ProductModel.findOneAndUpdate({_id: id}, {$set: {isPublic}}, {new: true})
+      const { id } = req.query;
+      const { isPublic } = req.body;
 
-        res.status(200).json({ message: "Public product successfully" });
+      const updateProduct = await ProductModel.findById(id);
+      if (!updateProduct)
+        return res.status(404).json({ message: statusMessage.NOT_FOUND });
+      const updated = await ProductModel.findOneAndUpdate(
+        { _id: id },
+        { $set: { isPublic } },
+        { new: true }
+      );
+
+      res.status(200).json({ message: "Public product successfully" });
     } catch (err) {
-        console.error("Error:", err);
-        res.status(500).json({ message: "Internal server error" });
+      console.error("Error:", err);
+      res.status(500).json({ message: "Internal server error" });
     }
-}
+  };
 
   /** get detail */
   static getDetailProduct = async (req, res) => {
