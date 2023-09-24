@@ -1,4 +1,5 @@
 const { deleteImagesCloudinary } = require("../middleware/uploadProduct");
+const mongoose = require('mongoose');
 const { ProductTypeModel, ProductModel } = require("../models/product.model");
 const {
   createMessage,
@@ -229,18 +230,19 @@ class ProductController {
 
   static publicProduct = async (req, res) => {
     try {
-      const {id} = req.query;
-      const {isPublic} = req.body;
-      const find = await ProductModel.findById(id);
-      if (!find) return res.status(404).json({message: statusMessage.NOT_FOUND});
+        const { id } = req.query;
+        const { isPublic } = req.body;
+        
+        const updateProduct = await ProductModel.findById(id);
+        if(!updateProduct) return res.status(404).json({message: statusMessage.NOT_FOUND});
+        const updated = await ProductModel.findOneAndUpdate({_id: id}, {$set: {isPublic}}, {new: true})
 
-      find.updateOne({$set: {isPublic: isPublic}});
-      res.status(200).json({message: "public product successfull"})
-
+        res.status(200).json({ message: "Public product successfully" });
     } catch (err) {
-      res.status(500).json(err)
+        console.error("Error:", err);
+        res.status(500).json({ message: "Internal server error" });
     }
-  }
+}
 
   /** get detail */
   static getDetailProduct = async (req, res) => {
