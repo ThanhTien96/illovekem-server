@@ -28,6 +28,31 @@ class PostController {
         parseInt(page);
         if (page <= 0) page = 1;
         let passQuantity = Number((page - 1) * perPage);
+        const post = await PostModel.find({isPublic: true}).skip(passQuantity).limit(perPage).sort({createdAt: -1});
+        const total = await PostModel.countDocuments({isPublic: true});
+        const totalPage = Math.ceil(total / Number(perPage));
+
+        return res
+          .status(200)
+          .json({ data: post, total, totalPage, currentPage: Number(page) });
+      } else {
+        const data = await PostModel.find({isPublic: true}).sort({createdAt: -1});
+        return res.status(200).json(data);
+      }
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
+
+   // get post with pagination and can get all
+   static adminGetPostPerPage = async (req, res) => {
+    try {
+      let { page, perPage } = req.query;
+
+      if (page) {
+        parseInt(page);
+        if (page <= 0) page = 1;
+        let passQuantity = Number((page - 1) * perPage);
         const post = await PostModel.find().skip(passQuantity).limit(perPage).sort({createdAt: -1});
         const total = await PostModel.countDocuments();
         const totalPage = Math.ceil(total / Number(perPage));
@@ -43,6 +68,20 @@ class PostController {
       res.status(500).json(err);
     }
   };
+
+  static publicPost = async (req, res) => {
+    try {
+      const { id} = req.query;
+      const {isPublic} = req.body;
+      const find = await PostModel.findById(id);
+      if(!find) return res.status(404).json({message: statusMessage.NOT_FOUND});
+      await PostModel.findOneAndUpdate({_id: id}, {$set: {isPublic}});
+      res.status(200).json({message: 'public post successfull'})
+      
+    } catch (err) {
+      res.status(500).json(err)
+    }
+  }
 
   /** create post */
   static createPost = async (req, res) => {

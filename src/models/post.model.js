@@ -10,6 +10,10 @@ const schema = new mongoose.Schema({
         type: String,
         required: true
     },
+    isPublic: {
+        type: Boolean,
+        default: false
+    },
     subContent: {
         type: String,
         required: false

@@ -11,31 +11,29 @@ const router = express.Router();
 router.get(
   "/userType",
   AuthorMiddlewareChecking.checkAccessToken,
-  AuthorMiddlewareChecking.isAuthorization,
   UserTypeController.getAll
 );
 router.get(
   "/userType/:id",
   AuthorMiddlewareChecking.checkAccessToken,
-  AuthorMiddlewareChecking.isAuthorization,
   UserTypeController.getDetail
 );
 router.post(
   "/userType",
   AuthorMiddlewareChecking.checkAccessToken,
-  AuthorMiddlewareChecking.isAuthorization,
+  AuthorMiddlewareChecking.isSupperAdmin,
   UserTypeController.createUserType
 );
 router.put(
   "/userType/:id",
   AuthorMiddlewareChecking.checkAccessToken,
-  AuthorMiddlewareChecking.isAuthorization,
+  AuthorMiddlewareChecking.isSupperAdmin,
   UserTypeController.updateType
 );
 router.delete(
   "/userType/:id",
   AuthorMiddlewareChecking.checkAccessToken,
-  AuthorMiddlewareChecking.isAuthorization,
+  AuthorMiddlewareChecking.isSupperAdmin,
   UserTypeController.deleteType
 );
 

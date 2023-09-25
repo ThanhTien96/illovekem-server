@@ -27,10 +27,27 @@ class ProductTypeController {
 
   static getAllProductTypeWithProduct = async (req, res) => {
     try {
-      const productType = await ProductTypeModel.find()
-        .sort({ role: "asc" })
-        .populate("products");
-
+      const productType = await ProductTypeModel.aggregate([
+        {
+          $lookup: {
+            from: "products", // Tên của bảng/sollection chứa các sản phẩm
+            localField: "products", // Trường tham chiếu trong bảng ProductType
+            foreignField: "_id", // Trường tham chiếu trong bảng sản phẩm
+            as: "products"
+          }
+        },
+        {
+          $match: {
+            "products.isPublic": true // Chỉ lấy các sản phẩm có isPublic là true
+          }
+        },
+        {
+          $sort: {
+            role: 1 // Sắp xếp theo trường role của ProductType (asc)
+          }
+        }
+      ]);
+  
       res.status(200).json(productType);
     } catch (err) {
       res.status(500).json(err);
