@@ -20,8 +20,9 @@ const userRouter = require('./src/routers/user.router');
 const mediaRouter = require('./src/routers/media.router');
 const otherFeatureRouter = require('./src/routers/otherFeature.router')
 const accountRouter = require('./src/routers/account.router');
+const countDocument = require('./src/routers/countDocument');
 
-app.use("/api/v1", postRouter, productRouter, userRouter, mediaRouter, otherFeatureRouter, accountRouter);
+app.use("/api/v1", postRouter, productRouter, userRouter, mediaRouter, otherFeatureRouter, accountRouter, countDocument);
 
 const PORT = process.env.SERVER_PORT || 3000;
 const MONGOOSE_DB = process.env.MONGOOSE_DB;
