@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  app:
+    container_name: server-node
+    image: server-node
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - "8080:8080" 
+      - "9229:9229"
+    environment:
+      - SERVER_PORT=8080
+      - MONGOOSE_DB=mongodb+srv://thanhtien2094dev:admin@cluster0.h5ayctl.mongodb.net/
+      - CLOUD_NAME=dyfwerfmm
+      - CLOUD_API_KEY=392392548993362
+      - CLOUD_API_SECRET=UOONX3_Sa-mAql5xsoPlyK62P-o
+    restart: unless-stopped
+    
+
+
+
+
