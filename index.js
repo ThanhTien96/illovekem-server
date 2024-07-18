@@ -28,7 +28,7 @@ const PORT = process.env.SERVER_PORT || 3000;
 const MONGOOSE_DB = process.env.MONGOOSE_DB;
 mongooseDB.set("strictQuery", true);
 mongooseDB
-  .connect(MONGOOSE_DB, { useNewUrlParser: true })
+  .connect(MONGOOSE_DB, {useUnifiedTopology: true, })
   .then(() => {
     console.log("connect db successfully!");
     app.listen(PORT, () => {
