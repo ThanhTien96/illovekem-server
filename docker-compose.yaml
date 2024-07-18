@@ -1,8 +1,7 @@
-version: '3.8'
 services:
   app:
     container_name: server-node
-    image: server-node
+    image: server-node:latest
     build:
       context: .
       dockerfile: Dockerfile

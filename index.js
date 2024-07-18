@@ -31,8 +31,10 @@ app.use(
 );
 
 const PORT = process.env.SERVER_PORT || 3000;
+const MONGOOSE_DB = process.env.MONGOOSE_DB;
 
-new mongodbConnection()
+const monogdb = new mongodbConnection(MONGOOSE_DB);
+monogdb._connect();
 
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);

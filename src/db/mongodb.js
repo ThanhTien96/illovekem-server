@@ -1,19 +1,18 @@
-
-
-let mongoose = require('mongoose');
-const MONGOOSE_DB = process.env.MONGOOSE_DB;
+let mongoose = require("mongoose");
 class Database {
-  constructor() {
-    this._connect()
+  mongoUri = "";
+  constructor(uri) {
+    this.mongoUri = uri
   }
-_connect() {
-     mongoose.connect(`${MONGOOSE_DB}`)
-       .then(() => {
-         console.log('Database connection successful')
-       })
-       .catch(err => {
-         console.error('Database connection error')
-       })
+  _connect() {
+    mongoose
+      .connect(`${this.mongoUri}`)
+      .then(() => {
+        console.log("Database connection successful");
+      })
+      .catch((err) => {
+        console.error("Database connection error");
+      });
   }
 }
 
